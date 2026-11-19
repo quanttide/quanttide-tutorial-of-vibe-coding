@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2a1a3e">
+<title>氛围编程 第 2 课 · 换个壳，又是新游戏</title>
+<style>
+  :root{
+    --night:#2a1a3e; --night2:#6b3350; --orange:#ff8b3d; --gold:#ffc93c;
+    --cream:#fff6e6; --ink:#3a271c; --sub:#8a6f5c; --green:#3f9c63;
+    --coffee:#5b3a24; --coffee2:#8a5a34; --latte:#f3e3cf;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:linear-gradient(170deg,var(--night) 0%,var(--night2) 58%,#c05a3c 100%);
+    background-attachment:fixed;
+    font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--ink);padding:20px 14px 40px;
+  }
+  .wrap{max-width:540px;margin:0 auto}
+
+  .hero{text-align:center;color:var(--cream);padding:14px 6px 22px}
+  .kicker{display:inline-block;font-size:13px;letter-spacing:.18em;color:var(--gold);
+    border:1px solid rgba(255,201,60,.5);border-radius:999px;padding:5px 14px;margin-bottom:16px}
+  .hero h1{font-size:30px;line-height:1.3;margin:0 0 10px;font-weight:800}
+  .hero p{margin:0;font-size:15px;color:rgba(255,246,230,.8);line-height:1.6}
+  .hero p em{color:var(--gold);font-style:normal;font-weight:700}
+
+  .card{background:var(--cream);border-radius:20px;padding:4px 18px;
+    box-shadow:0 18px 44px rgba(0,0,0,.32);margin-bottom:14px}
+
+  /* ===== 换壳对比区（本课核心）===== */
+  .compare{background:var(--cream);border-radius:20px;padding:18px;
+    box-shadow:0 18px 44px rgba(0,0,0,.32);margin-bottom:14px}
+  .compare h2{font-size:17px;margin:0 0 4px;text-align:center;font-weight:800}
+  .compare .lead{font-size:13px;color:var(--sub);text-align:center;margin:0 0 16px;line-height:1.5}
+  .shot{background:#fff;border:1px solid rgba(138,111,92,.18);border-radius:12px;padding:8px;margin-bottom:6px}
+  .shot .tag{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;margin:2px 2px 8px}
+  .shot .tag .dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
+  .shot.a .dot{background:var(--orange)} .shot.b .dot{background:var(--coffee2)}
+  .shot img{display:block;width:100%;border-radius:8px;border:1px solid rgba(0,0,0,.08)}
+  .arrow{text-align:center;margin:2px 0 12px}
+  .arrow .line{font-size:12px;color:var(--sub);letter-spacing:.05em}
+  .arrow .badge{display:inline-block;background:var(--gold);color:#6b4b00;font-weight:800;
+    font-size:12px;border-radius:999px;padding:4px 14px;margin-bottom:3px;
+    box-shadow:0 3px 0 #d9a417}
+  .arrow .down{color:var(--gold);font-size:20px;line-height:1}
+
+  .verdict{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid rgba(91,58,36,.2)}
+  .verdict .row{display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:13.5px;line-height:1.4}
+  .verdict .row.same{background:#eaf6ee}
+  .verdict .row.diff{background:#fbf1e4}
+  .verdict .row.key{background:var(--coffee);color:var(--cream);font-weight:800;font-size:14px}
+  .verdict .ic{font-size:16px;flex:0 0 20px;text-align:center}
+  .verdict b{font-weight:800}
+
+  /* ===== 步骤 ===== */
+  .step{padding:18px 2px;border-bottom:1px dashed rgba(138,111,92,.28)}
+  .step:last-child{border-bottom:none}
+  .head{display:flex;gap:12px;align-items:flex-start}
+  .num{flex:0 0 34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;
+    font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 0 #c85a1e}
+  .head h2{font-size:18px;margin:1px 0 4px;font-weight:800}
+  .head .do{font-size:14px;color:var(--sub);line-height:1.55}
+
+  .result{margin:13px 0 0 46px;background:#fff;border:1px solid rgba(138,111,92,.18);
+    border-left:4px solid var(--gold);border-radius:10px;padding:12px 13px}
+  .result .lab{font-size:11px;font-weight:800;letter-spacing:.05em;color:#b07d1f;margin-bottom:8px}
+  .mock-input{background:#f5efe4;border:1px solid #e3d3bd;border-radius:8px;
+    padding:10px 12px;font-size:13px;color:#5a4634;line-height:1.5}
+  .mock-step{font-size:13px;color:#6b5a48;line-height:1.9;font-family:"SFMono-Regular",Consolas,monospace}
+  .mock-step .run{color:var(--orange)}
+  .mock-step .ok{color:var(--green);font-weight:700}
+  .mock-link{background:var(--night);border-radius:8px;padding:10px 12px;
+    font-size:12px;line-height:1.6;word-break:break-all;
+    font-family:"SFMono-Regular",Consolas,monospace;color:#d9c7ff}
+  .mock-link .host{color:var(--gold)}
+  .mock-link .code{color:#ff9f79}
+
+  .copybox{margin-top:12px;background:#fff;border:2px dashed var(--orange);border-radius:12px;padding:13px}
+  .copybox .label{font-size:12px;color:var(--orange);font-weight:800;margin-bottom:9px}
+  .code-real{background:var(--night);color:var(--gold);border-radius:10px;padding:12px 13px;
+    font-size:13px;line-height:1.6;word-break:break-all;font-family:"SFMono-Regular",Consolas,monospace}
+  .btn{display:block;width:100%;margin-top:11px;border:none;border-radius:11px;
+    background:var(--orange);color:#fff;font-size:16px;font-weight:800;padding:13px;
+    cursor:pointer;box-shadow:0 5px 0 #c85a1e;transition:transform .08s,box-shadow .08s}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #c85a1e}
+  .btn.done{background:var(--green);box-shadow:0 5px 0 #2f7a4b}
+
+  .tip{background:rgba(255,255,255,.1);border-radius:14px;padding:15px 16px;
+    color:var(--cream);font-size:13.5px;line-height:1.7;margin-top:4px}
+  .tip b{color:var(--gold)}
+  .tip .big{font-size:16px;font-weight:800;color:var(--gold);display:block;margin-bottom:6px}
+  .foot{text-align:center;color:rgba(255,246,230,.7);font-size:13px;margin-top:24px;line-height:1.6}
+  .foot strong{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="kicker">氛围编程 · 第 2 课</span>
+    <h1>换个壳，又是新游戏</h1>
+    <p>上一课的串串摊，只需改一句话就变成<em>咖啡店</em>——<br>玩法、数值一个字都没动。</p>
+  </div>
+
+  <!-- ===== 核心对比：先看结果 ===== -->
+  <div class="compare">
+    <h2>同一个游戏，两个壳</h2>
+    <p class="lead">先看结果，待会儿你自己也能做出来</p>
+
+    <div class="shot a">
+      <div class="tag"><span class="dot"></span>第 1 课做的：夜市 · 串串摊</div>
+      <img src="assets/game-preview.png" alt="串串摊游戏首页">
+    </div>
+
+    <div class="arrow">
+      <span class="badge">只改了一句话</span>
+      <div class="down">↓</div>
+      <div class="line">换招牌 · 换文案 · 换配色 · 换图标</div>
+    </div>
+
+    <div class="shot b">
+      <div class="tag"><span class="dot"></span>第 2 课改的：老街 · 咖啡店</div>
+      <img src="assets/coffee-preview.png" alt="咖啡店游戏首页">
+    </div>
+
+    <div class="verdict">
+      <div class="row same"><span class="ic">✓</span><span><b>没变的：</b>玩法、数值、规则——一模一样</span></div>
+      <div class="row diff"><span class="ic">✎</span><span><b>全换的：</b>招牌、文案、配色、图标、角色</span></div>
+      <div class="row key"><span class="ic">★</span><span>万变不离其宗——软件其实就那么回事</span></div>
+    </div>
+  </div>
+
+  <!-- ===== 操作步骤 ===== -->
+  <div class="card">
+
+    <div class="step">
+      <div class="head">
+        <div class="num">1</div>
+        <div>
+          <h2>打开 WorkBuddy</h2>
+          <div class="do">接着上一课，还在这个游戏里。</div>
+        </div>
+      </div>
+      <div class="result">
+        <div class="lab">做完你会看到</div>
+        <div class="mock-input">还是上次那个串串摊游戏的对话，能接着往下说。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">2</div>
+        <div>
+          <h2>复制这句话，粘贴进去</h2>
+          <div class="do">点按钮复制，粘贴到输入框。注意它特意说了「玩法别改」。</div>
+        </div>
+      </div>
+      <div class="copybox">
+        <div class="label">点按钮一键复制</div>
+        <div class="code-real" id="prompt">把串串摊游戏改成咖啡店主题：招牌、文案、配色、图标、吉祥物全都换成咖啡店，但玩法、数值、规则一个都不要改。改完上线。</div>
+        <button class="btn" id="copyBtn" onclick="copyPrompt()">复制这句话</button>
+      </div>
+      <div class="result">
+        <div class="lab">做完你会看到</div>
+        <div class="mock-input">输入框里出现上面那一整段话。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">3</div>
+        <div>
+          <h2>按回车，等它跑完</h2>
+          <div class="do">它会自己把所有文字、图标、配色换一遍，玩法原封不动。</div>
+        </div>
+      </div>
+      <div class="result">
+        <div class="lab">做完你会看到</div>
+        <div class="mock-step">
+          <span class="run">›</span> 正在把所有文案换成咖啡店…<br>
+          <span class="run">›</span> 正在换配色、图标、吉祥物…<br>
+          <span class="run">›</span> 正在确认玩法数值没动…<br>
+          <span class="run">›</span> 正在上线…<br>
+          <span class="ok">✓</span> <span class="ok">完成！给你新的游戏链接</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">4</div>
+        <div>
+          <h2>点开新链接，对比着玩两局</h2>
+          <div class="do">一边开咖啡店，一边回想串串摊。是不是玩法完全一样？</div>
+        </div>
+      </div>
+      <div class="result">
+        <div class="lab">做完你会看到（新的链接长这样）</div>
+        <div class="mock-link">https://<span class="host">xxxx.app.workbuddy.host</span>/<span class="code">?sharecode=XXXXXXXX</span></div>
+        <div class="shottip" style="font-size:12px;color:var(--sub);text-align:center;margin-top:8px">点开就是咖啡店，但一玩就发现——套路还是那个套路</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tip">
+    <span class="big">想明白了吗？</span>
+    你只改了一句话，AI 就做出了一款「新游戏」。<br>
+    其实所有软件都这样：<b>表面花里胡哨，核心逻辑就那么点</b>。<br>
+    壳想换什么样就换什么样，里面的玩法不动。<br>
+    ——你现在，已经看懂软件的门道了。
+  </div>
+
+  <div class="foot">万变不离其宗 · <strong>原来软件就这么简单</strong></div>
+
+</div>
+
+<script>
+function copyPrompt(){
+  var text = document.getElementById('prompt').textContent.trim();
+  var btn = document.getElementById('copyBtn');
+  function ok(){
+    btn.textContent = '已复制，去粘贴吧';
+    btn.classList.add('done');
+    setTimeout(function(){
+      btn.textContent = '复制这句话';
+      btn.classList.remove('done');
+    }, 2500);
+  }
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(ok).catch(fallback);
+  }else{ fallback(); }
+  function fallback(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); ok(); }
+    catch(e){ btn.textContent = '请长按上面文字复制'; }
+    document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>

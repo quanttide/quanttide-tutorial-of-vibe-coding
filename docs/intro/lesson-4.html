@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f1622">
+<title>氛围编程 第 4 课 · 拿出去，给人玩</title>
+<style>
+  :root{
+    --night:#0f1622; --night2:#263b5e; --blue:#3f6fb0; --blue-l:#7fc0ff;
+    --gold:#f2b84b; --cream:#eef3f9; --ink:#1e2b3d; --sub:#62748c; --green:#3a9d6e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:linear-gradient(170deg,var(--night) 0%,#182842 58%,#37527d 100%);
+    background-attachment:fixed;
+    font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--ink);padding:20px 14px 40px;
+  }
+  .wrap{max-width:540px;margin:0 auto}
+
+  .hero{text-align:center;color:var(--cream);padding:14px 6px 20px}
+  .kicker{display:inline-block;font-size:13px;letter-spacing:.18em;color:var(--gold);
+    border:1px solid rgba(242,184,75,.5);border-radius:999px;padding:5px 14px;margin-bottom:16px}
+  .hero h1{font-size:30px;line-height:1.3;margin:0 0 10px;font-weight:800}
+  .hero p{margin:0;font-size:15px;color:rgba(238,243,249,.82);line-height:1.6}
+  .hero p em{color:var(--gold);font-style:normal;font-weight:700}
+
+  /* 四课递进 */
+  .path{background:var(--cream);border-radius:18px;padding:14px 10px;
+    box-shadow:0 16px 40px rgba(0,0,0,.32);margin-bottom:14px}
+  .path h3{font-size:13px;margin:0 0 12px;text-align:center;color:var(--sub);letter-spacing:.08em}
+  .steps3{display:flex;align-items:stretch;gap:4px}
+  .steps3 .it{flex:1;text-align:center;position:relative}
+  .steps3 .it .b{background:#e3ebf5;border-radius:10px;padding:9px 2px;font-size:11.5px;color:#7a8aa0;font-weight:700;line-height:1.4}
+  .steps3 .it.on .b{background:var(--blue);color:#fff;box-shadow:0 4px 0 #2c5186}
+  .steps3 .it .n{font-size:10.5px;color:var(--sub);margin-top:6px}
+  .steps3 .it.on .n{color:var(--blue);font-weight:800}
+  .steps3 .arw{position:absolute;right:-6px;top:14px;color:#b9c7d8;font-size:13px;font-weight:800}
+
+  .card{background:var(--cream);border-radius:20px;padding:4px 18px;
+    box-shadow:0 18px 44px rgba(0,0,0,.32);margin-bottom:14px}
+  .card .ctitle{font-size:16px;font-weight:800;margin:16px 2px 8px}
+
+  /* 耗时提示 */
+  .notice{background:linear-gradient(135deg,#fff2e8,#ffe3cf);border:1px solid rgba(224,140,70,.45);
+    border-radius:14px;padding:14px 15px;margin:14px 0 4px}
+  .notice .t{font-size:13px;font-weight:800;color:#a85b1f;margin-bottom:7px}
+  .notice p{font-size:13.5px;color:#7a4a20;line-height:1.72;margin:0}
+  .notice b{color:#a85b1f}
+
+  /* 两张概念卡 */
+  .qc{background:#fff;border:1px solid rgba(98,116,140,.18);border-radius:10px;padding:12px 13px;margin-top:9px;font-size:13px;line-height:1.72;color:#4a5b70}
+  .qc b{color:var(--ink)}
+  .qc .qn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+    border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:800;margin-right:6px}
+
+  .step{padding:18px 2px;border-bottom:1px dashed rgba(98,116,140,.28)}
+  .step:last-child{border-bottom:none}
+  .head{display:flex;gap:12px;align-items:flex-start}
+  .num{flex:0 0 34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;
+    font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 0 #2c5186}
+  .head h2{font-size:18px;margin:1px 0 4px;font-weight:800}
+  .head .do{font-size:14px;color:var(--sub);line-height:1.55}
+
+  .result{margin:13px 0 0 46px;background:#fff;border:1px solid rgba(98,116,140,.18);
+    border-left:4px solid var(--gold);border-radius:10px;padding:12px 13px}
+  .result .lab{font-size:11px;font-weight:800;letter-spacing:.05em;color:#b07d1f;margin-bottom:8px}
+  .mock-input{background:#f2f6fb;border:1px solid #d8e2ef;border-radius:8px;
+    padding:10px 12px;font-size:13px;color:#3a4c63;line-height:1.6}
+  .mock-step{font-size:13px;color:#4a5b70;line-height:1.9;font-family:"SFMono-Regular",Consolas,monospace}
+  .mock-step .run{color:var(--blue)}
+  .mock-step .ok{color:var(--green);font-weight:700}
+
+  .copybox{margin-top:12px;background:#fff;border:2px dashed var(--blue);border-radius:12px;padding:13px}
+  .copybox .label{font-size:12px;color:var(--blue);font-weight:800;margin-bottom:9px}
+  .code-real{background:var(--night);color:#cfe8ff;border-radius:10px;padding:12px 13px;
+    font-size:13px;line-height:1.65;word-break:break-all;font-family:"SFMono-Regular",Consolas,monospace}
+  .btn{display:block;width:100%;margin-top:11px;border:none;border-radius:11px;
+    background:var(--blue);color:#fff;font-size:16px;font-weight:800;padding:13px;
+    cursor:pointer;box-shadow:0 5px 0 #2c5186;transition:transform .08s,box-shadow .08s}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #2c5186}
+  .btn.done{background:var(--green);box-shadow:0 5px 0 #2a7a55}
+
+  /* 宣传册示意 */
+  .promo{margin:12px 0 0 46px;background:#fff;border:1px solid rgba(98,116,140,.18);border-radius:10px;overflow:hidden}
+  .promo .ph{font-size:11px;font-weight:800;color:#b07d1f;padding:9px 12px;background:#fff8e6}
+  .promo .pb{padding:12px}
+  .promo .pt{font-size:15px;font-weight:800;color:var(--ink);text-align:center}
+  .promo .ps{font-size:12px;color:#7a8aa0;text-align:center;margin:5px 0;line-height:1.5}
+  .promo .pl{font-size:12px;color:#b07d1f;line-height:1.7;margin:8px 0}
+  .promo .pi{background:#eef3fa;border:1px dashed #b9c7d8;border-radius:8px;height:56px;
+    display:flex;align-items:center;justify-content:center;color:#9aabc0;font-size:12px;margin:8px 0}
+  .promo .pbtn{background:var(--blue);color:#fff;text-align:center;border-radius:8px;padding:9px;font-size:13px;font-weight:800}
+
+  /* 话术框 */
+  .ask{background:#eaf7f0;border:1px solid #bfe3ce;border-radius:10px;padding:12px 13px;font-size:13px;color:#2a7a55;line-height:1.7;margin-top:10px}
+  .ask b{color:#1d5c40}
+  .qbox{margin:12px 0 0 46px;background:#fff;border:1px solid rgba(98,116,140,.18);border-radius:10px;padding:12px 13px}
+  .qbox .lab{font-size:11px;font-weight:800;color:var(--blue);margin-bottom:7px}
+  .qbox .qi{font-size:13px;line-height:1.7;color:#3a4c63;margin:5px 0}
+  .qbox .qi b{color:var(--blue)}
+
+  /* 反馈记录表 */
+  .fb{margin:12px 0 0 46px;background:#fff;border:1px solid rgba(98,116,140,.18);border-radius:10px;overflow:hidden}
+  .fb .fh{font-size:11px;font-weight:800;color:#3f6fb0;padding:9px 12px;background:#eef4fc}
+  .fb table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .fb th,.fb td{border:1px solid #e6edf6;padding:7px 6px;text-align:left;line-height:1.5;vertical-align:top}
+  .fb th{background:#f6f9fd;color:#62748c;font-weight:800}
+  .fb td{color:#4a5b70}
+  .fb .grey{color:#a6b3c4}
+
+  .takeaway{background:linear-gradient(135deg,rgba(127,192,255,.14),rgba(242,184,75,.12));
+    border:1px solid rgba(127,192,255,.3);border-radius:14px;padding:15px 16px;
+    color:var(--cream);font-size:13.5px;line-height:1.75;margin-top:4px}
+  .takeaway .big{font-size:16px;font-weight:800;color:var(--gold);display:block;margin-bottom:7px}
+  .takeaway b{color:var(--blue-l)}
+  .foot{text-align:center;color:rgba(238,243,249,.72);font-size:13px;margin-top:24px;line-height:1.6}
+  .foot strong{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="kicker">氛围编程 · 第 4 课 · 本章收官</span>
+    <h1>拿出去，给人玩</h1>
+    <p>前三课，你一直在跟 AI 打交道。<br>这一课，<em>你要第一次离开 AI，去找真实的人。</em></p>
+  </div>
+
+  <!-- 四课递进 -->
+  <div class="path">
+    <h3>本章我们走了四步</h3>
+    <div class="steps3">
+      <div class="it"><div class="b">照着做</div><div class="n">第1课</div><span class="arw">›</span></div>
+      <div class="it"><div class="b">换个壳</div><div class="n">第2课</div><span class="arw">›</span></div>
+      <div class="it"><div class="b">自己设计</div><div class="n">第3课</div><span class="arw">›</span></div>
+      <div class="it on"><div class="b">拿出去</div><div class="n">第4课</div></div>
+    </div>
+  </div>
+
+  <!-- 耗时提示 -->
+  <div class="notice">
+    <div class="t">先说清楚：这一课要花时间</div>
+    <p>前三课，你坐在电脑前敲几分钟就做完了。<b>这一课不行——你得去找真人，等人玩，听他们说。</b><br>这不是一节课能做完的。给自己留 <b>3～7 天</b>，做完回来分享。慢一点，才对。</p>
+  </div>
+
+  <!-- 为什么做宣传册 -->
+  <div class="card">
+    <div class="ctitle">为什么这一课要做「宣传册」？</div>
+    <p style="font-size:13.5px;color:var(--sub);line-height:1.7;margin:4px 2px 6px">
+      宣传册是「给别人看的东西」。它会自动逼你做两件事——<strong style="color:var(--ink)">而这正是这一课的全部目的：</strong>
+    </p>
+    <div class="qc">
+      <span class="qn">1</span><b>逼你讲清楚：我的游戏到底是什么</b><br>
+      要向别人推销，你得先回答三个问题：<b>好玩在哪？给谁玩？凭什么让人点开？</b><br>
+      很多人到这一步才发现——做了半天，居然说不清自己做的啥。能讲清楚，才算真的懂。
+    </div>
+    <div class="qc">
+      <span class="qn">2</span><b>逼你去找真人：AI 帮不了你了</b><br>
+      宣传册没法发给 AI——它不会真的玩，只会说「挺好的，已完成」。<br>
+      你只能发给活人。<b>这就是这一课的「强制」。</b>
+    </div>
+  </div>
+
+  <!-- 操作步骤 -->
+  <div class="card">
+
+    <div class="step">
+      <div class="head">
+        <div class="num">1</div>
+        <div>
+          <h2>让 AI 帮你做宣传册</h2>
+          <div class="do">把你上一课的游戏链接给它，让它做一张能转发的宣传册。</div>
+        </div>
+      </div>
+      <div class="copybox">
+        <div class="label">点按钮一键复制</div>
+        <div class="code-real" id="promo">我做了个小游戏，游戏链接是：[把你的游戏链接贴到这里]。帮我做一张宣传册（一个适合转发到微信群的网页/海报）：① 用一句话说清这游戏是干嘛的 ② 列出 3 个让人想点开玩的卖点 ③ 放上游戏截图的位置 ④ 放一个醒目的「立即试玩」按钮，点了能打开游戏链接 ⑤ 好看、清爽、手机上打开也清楚。做完给我一个能转发的链接。</div>
+        <button class="btn" id="promoBtn" onclick="copyFrom('promo','promoBtn')">复制这段话</button>
+      </div>
+      <div class="result">
+        <div class="lab">一句话提醒</div>
+        <div class="mock-input">记得把链接里 <strong>[把你的游戏链接贴到这里]</strong> 换成你自己的游戏链接，不然宣传册点开是空的。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">2</div>
+        <div>
+          <h2>看看 AI 做的宣传册</h2>
+          <div class="do">拿到链接后点开看看，是不是一眼就看懂「这是个什么游戏」。</div>
+        </div>
+      </div>
+      <div class="promo">
+        <div class="ph">宣传册大概长这样（示意）</div>
+        <div class="pb">
+          <div class="pt">加班大厦 · 打工人</div>
+          <div class="ps">一句话说清：猜老板今天派多少活，押准了升职加薪</div>
+          <div class="pl">· 3 分钟一局 · 打工人真实到流泪 · 免费玩</div>
+          <div class="pi">［ 这里放游戏截图 ］</div>
+          <div class="pbtn">▶ 立即试玩</div>
+        </div>
+      </div>
+      <div class="result">
+        <div class="lab">检查三件事</div>
+        <div class="mock-input">
+          ① 一句话介绍，<strong>你自己读了能懂吗</strong>？<br>
+          ② 「立即试玩」按钮，<strong>点了能打开你的游戏吗</strong>？<br>
+          ③ 手机上打开，<strong>字会不会太小、会不会乱</strong>？
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">3</div>
+        <div>
+          <h2>拿出去，找真人玩</h2>
+          <div class="do">这是这一课最重要、也最花时间的一步。把宣传册发给真人，请他们玩、请他们说真话。</div>
+        </div>
+      </div>
+      <div class="result">
+        <div class="lab">找谁？（至少 3 个人，越不一样越好）</div>
+        <div class="mock-input">1 个熟人（同学/朋友）· 1 个不太熟的人（班级群/同事）· 1 个「陌生人」（群里、论坛、楼下店老板都行）</div>
+      </div>
+      <div class="ask">
+        <b>不好意思开口？照着这句发就行：</b><br>
+        「我做了个小游戏，帮我看两眼呗～不用客气，哪里看不懂、哪里无聊，直接说，我想听真话。」
+        <div class="copybox" style="margin-top:11px">
+          <div class="label">点按钮复制这句开口话术</div>
+          <div class="code-real" id="ask">我做了个小游戏，帮我看两眼呗～不用客气，哪里看不懂、哪里无聊，直接说，我想听真话。[这里贴上你的宣传册链接]</div>
+          <button class="btn" id="askBtn" onclick="copyFrom('ask','askBtn')">复制这句话</button>
+        </div>
+      </div>
+      <div class="qbox">
+        <div class="lab">玩完后，务必问这三个问题（别只问「好不好玩」）</div>
+        <div class="qi"><b>①</b> 你第一眼以为这游戏是干嘛的？<span style="color:#9aa8ba">（看他理解得对不对）</span></div>
+        <div class="qi"><b>②</b> 玩的时候，哪里卡住／没看懂？<span style="color:#9aa8ba">（找设计缺陷）</span></div>
+        <div class="qi"><b>③</b> 你会发给朋友玩吗？为什么？<span style="color:#9aa8ba">（测真实价值）</span></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="head">
+        <div class="num">4</div>
+        <div>
+          <h2>记下反馈，回来改一版</h2>
+          <div class="do">把听到的话记下来——尤其是「你以为好玩、人家却没感觉」的地方，那最值钱。</div>
+        </div>
+      </div>
+      <div class="fb">
+        <div class="fh">我的反馈记录表（照着填，找了 ___ 个人）</div>
+        <table>
+          <tr><th>谁</th><th>怎么找到的</th><th>玩多久</th><th>他说了啥（原话）</th></tr>
+          <tr><td>同学A</td><td>直接发</td><td>2 分钟</td><td class="grey">「没看懂要干嘛」</td></tr>
+          <tr><td>群友B</td><td>班级群</td><td class="grey">___</td><td class="grey">「……」</td></tr>
+          <tr><td class="grey">___</td><td class="grey">___</td><td class="grey">___</td><td class="grey">「……」</td></tr>
+        </table>
+      </div>
+      <div class="result">
+        <div class="lab">最后一步：把反馈交回给 AI</div>
+        <div class="mock-input">把记录表里的话贴给 AI，说「<strong>根据用户反馈改一版</strong>」。比如有人说「没看懂要干嘛」，就让 AI 把介绍改得更清楚。<br>——听到真话，再改一版，这一课就圆满了。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="takeaway">
+    <span class="big">这一课，你学会了什么？</span>
+    前三课，你的搭档一直是 AI——它永远说「已完成」。<br>
+    这一课，<b>你把作品拿给真人，第一次听到真话</b>。<br>
+    你发现：你以为好玩的地方，人家可能没感觉；你没在意的细节，人家却记住了。<br>
+    <b>你做的游戏是什么，不由你说了算，由玩它的人说了算。</b><br>
+    做出来，只是开始；有人玩，才算完成。到这里，这一章就圆满了。
+  </div>
+
+  <div class="foot">做出来只是开始 · <strong>有人玩，才算完成</strong></div>
+
+</div>
+
+<script>
+function copyFrom(textId, btnId){
+  var text = document.getElementById(textId).textContent.trim();
+  var btn = document.getElementById(btnId);
+  function ok(){
+    btn.textContent = '已复制，去粘贴吧';
+    btn.classList.add('done');
+    setTimeout(function(){
+      btn.textContent = '复制这段话';
+      btn.classList.remove('done');
+    }, 2500);
+  }
+  function fallback(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); ok(); }
+    catch(e){ btn.textContent = '请长按上面文字复制'; }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(ok).catch(fallback);
+  }else{ fallback(); }
+}
+</script>
+</body>
+</html>

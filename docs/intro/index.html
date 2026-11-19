@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f1622">
+<title>氛围编程 · 本章学习计划总览</title>
+<style>
+  :root{
+    --night:#0f1622; --blue:#3f6fb0; --blue-l:#7fc0ff;
+    --gold:#f2b84b; --cream:#eef3f9; --ink:#1e2b3d; --sub:#62748c; --green:#3a9d6e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:linear-gradient(170deg,var(--night) 0%,#182842 58%,#37527d 100%);
+    background-attachment:fixed;
+    font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--ink);padding:20px 14px 40px;
+  }
+  .wrap{max-width:560px;margin:0 auto}
+
+  .hero{text-align:center;color:var(--cream);padding:14px 6px 20px}
+  .kicker{display:inline-block;font-size:13px;letter-spacing:.18em;color:var(--gold);
+    border:1px solid rgba(242,184,75,.5);border-radius:999px;padding:5px 14px;margin-bottom:16px}
+  .hero h1{font-size:29px;line-height:1.35;margin:0 0 10px;font-weight:800}
+  .hero p{margin:0;font-size:15px;color:rgba(238,243,249,.82);line-height:1.65}
+  .hero p em{color:var(--gold);font-style:normal;font-weight:700}
+
+  /* 能力路径 */
+  .path{background:var(--cream);border-radius:18px;padding:16px 12px;
+    box-shadow:0 16px 40px rgba(0,0,0,.32);margin-bottom:14px}
+  .path h3{font-size:13px;margin:0 0 12px;text-align:center;color:var(--sub);letter-spacing:.08em}
+  .steps4{display:flex;align-items:stretch;gap:4px}
+  .steps4 .it{flex:1;text-align:center;position:relative}
+  .steps4 .it .b{background:#e3ebf5;border-radius:10px;padding:10px 2px;font-size:12px;color:#7a8aa0;font-weight:800;line-height:1.4}
+  .steps4 .it .n{font-size:10.5px;color:var(--sub);margin-top:6px}
+  .steps4 .arw{position:absolute;right:-6px;top:14px;color:#b9c7d8;font-size:13px;font-weight:800}
+
+  /* 一句话主线 */
+  .line{background:linear-gradient(135deg,#fff8e6,#fdecc4);border:1px solid rgba(242,184,75,.45);
+    border-radius:14px;padding:14px 15px;margin-bottom:14px}
+  .line .t{font-size:13px;font-weight:800;color:#b07d1f;margin-bottom:7px}
+  .line p{font-size:14px;color:#6b4b12;line-height:1.75;margin:0}
+  .line b{color:#a85b1f}
+
+  /* 四课卡片 */
+  .card{background:var(--cream);border-radius:20px;padding:6px 16px;
+    box-shadow:0 18px 44px rgba(0,0,0,.32);margin-bottom:14px}
+  .lesson{display:flex;gap:13px;padding:18px 2px;border-bottom:1px dashed rgba(98,116,140,.28)}
+  .lesson:last-child{border-bottom:none}
+  .lnum{flex:0 0 40px;height:40px;border-radius:12px;background:var(--blue);color:#fff;
+    font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 0 #2c5186}
+  .lesson.fin .lnum{background:var(--gold);box-shadow:0 4px 0 #b07d1f;color:#4a3005}
+  .lbody{flex:1;min-width:0}
+  .lbody h2{font-size:17px;margin:0 0 3px;font-weight:800}
+  .lbody .role{font-size:12px;color:var(--sub);margin-bottom:7px}
+  .lbody .role b{color:var(--blue)}
+  .lesson.fin .role b{color:#a85b1f}
+  .lbody .desc{font-size:13.5px;color:#4a5b70;line-height:1.7;margin-bottom:8px}
+  .lbody .desc b{color:var(--ink)}
+  .meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .meta span{font-size:11px;background:#e9eff7;color:#5b6b80;border-radius:6px;padding:3px 8px;font-weight:700}
+  .go{display:inline-block;border:none;border-radius:9px;background:var(--blue);color:#fff;
+    font-size:13px;font-weight:800;padding:9px 16px;cursor:pointer;text-decoration:none;
+    box-shadow:0 3px 0 #2c5186;transition:transform .08s,box-shadow .08s}
+  .go:active{transform:translateY(2px);box-shadow:0 1px 0 #2c5186}
+
+  /* 收官总结 */
+  .final{background:var(--cream);border-radius:20px;padding:16px;
+    box-shadow:0 18px 44px rgba(0,0,0,.32);margin-bottom:14px}
+  .final h2{font-size:16px;margin:0 0 10px;text-align:center;font-weight:800}
+  .chain{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+  .chain span{background:#e9eff7;color:#41536b;font-size:12.5px;font-weight:800;
+    border-radius:8px;padding:7px 10px}
+  .chain span.on{background:var(--blue);color:#fff}
+  .chain .ar{color:#b9c7d8;font-weight:800}
+  .final p{font-size:13.5px;color:#4a5b70;line-height:1.75;margin:6px 2px}
+  .final p b{color:var(--ink)}
+
+  .takeaway{background:linear-gradient(135deg,rgba(127,192,255,.14),rgba(242,184,75,.12));
+    border:1px solid rgba(127,192,255,.3);border-radius:14px;padding:15px 16px;
+    color:var(--cream);font-size:13.5px;line-height:1.8;margin-bottom:14px}
+  .takeaway .big{font-size:16px;font-weight:800;color:var(--gold);display:block;margin-bottom:8px}
+  .takeaway b{color:var(--blue-l)}
+
+  .foot{text-align:center;color:rgba(238,243,249,.72);font-size:13px;margin-top:22px;line-height:1.6}
+  .foot strong{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="kicker">氛围编程 · 学习计划总览</span>
+    <h1>四章四课，做出你的第一个作品</h1>
+    <p>从「照着做」到「拿出去给人玩」，<br><em>一条直线走完：做出来 → 改起来 → 创出来 → 推出去。</em></p>
+  </div>
+
+  <!-- 能力路径 -->
+  <div class="path">
+    <h3>四课能力路径</h3>
+    <div class="steps4">
+      <div class="it"><div class="b">会用</div><div class="n">第 1 课</div><span class="arw" style="color:#b9c7d8">›</span></div>
+      <div class="it"><div class="b">会改</div><div class="n">第 2 课</div><span class="arw" style="color:#b9c7d8">›</span></div>
+      <div class="it"><div class="b">会创</div><div class="n">第 3 课</div><span class="arw" style="color:#b9c7d8">›</span></div>
+      <div class="it"><div class="b">会交付</div><div class="n">第 4 课</div></div>
+    </div>
+  </div>
+
+  <!-- 主线 -->
+  <div class="line">
+    <div class="t">这一章的主线（一句话）</div>
+    <p>同一个游戏，做四遍：先<b>照着做一个</b>，再<b>换个壳</b>，然后<b>让 AI 帮你设计新玩法</b>，最后<b>拿给真人玩、听真话</b>。<br>每一步都只用一句话指挥 AI——你学会的不是代码，是<b>把想法变成作品的能力</b>。</p>
+  </div>
+
+  <!-- 四课卡片 -->
+  <div class="card">
+
+    <div class="lesson">
+      <div class="lnum">1</div>
+      <div class="lbody">
+        <h2>照着做 · Hello World</h2>
+        <div class="role">你的角色：<b>操作员</b> · 用时约 30 分钟</div>
+        <div class="desc">复制一句话发给 AI，看着它把一个夜市小游戏<b>复刻并上线</b>。下课时你手机里就有一个能发给朋友玩的链接。</div>
+        <div class="meta"><span>产出：上线的游戏链接</span><span>关键词：一句话出作品</span></div>
+        <a class="go" href="hello-world.html">进入第 1 课 ›</a>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lnum">2</div>
+      <div class="lbody">
+        <h2>换个壳 · 又是新游戏</h2>
+        <div class="role">你的角色：<b>改壳工</b> · 用时约 30 分钟</div>
+        <div class="desc">把串串摊改成咖啡店——<b>玩法数值一个没动</b>，只换了皮。你会发现：软件万变不离其宗，其实就那么回事。</div>
+        <div class="meta"><span>产出：咖啡店版游戏</span><span>关键词：壳与核</span></div>
+        <a class="go" href="lesson-2.html">进入第 2 课 ›</a>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <div class="lnum">3</div>
+      <div class="lbody">
+        <h2>这回，你说了不算</h2>
+        <div class="role">你的角色：<b>设计师 · 出题人</b> · 用时约 35 分钟</div>
+        <div class="desc">这次只给一个<b>模糊想法</b>（打工人视角），让 AI 先出设计方案再实现。玩法规则全变了——你体验「AI 帮你设计」。</div>
+        <div class="meta"><span>产出：打工人版游戏</span><span>关键词：想法 → 玩法</span></div>
+        <a class="go" href="lesson-3.html">进入第 3 课 ›</a>
+      </div>
+    </div>
+
+    <div class="lesson fin">
+      <div class="lnum">4</div>
+      <div class="lbody">
+        <h2>拿出去，给人玩</h2>
+        <div class="role">你的角色：<b>作者 + 推广者</b> · 跨 3-7 天（本章收官）</div>
+        <div class="desc">离开 AI，做宣传册、找真人、听真话。你做的游戏是什么，<b>由玩它的人说了算</b>。这一课要花时间，慢慢来。</div>
+        <div class="meta"><span>产出：宣传册 + 反馈记录表</span><span>关键词：真人反馈</span></div>
+        <a class="go" href="lesson-4.html">进入第 4 课 ›</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 收官总结 -->
+  <div class="final">
+    <h2>走完这一章，你会拥有</h2>
+    <div class="chain">
+      <span>会用</span><span class="ar">›</span>
+      <span>会改</span><span class="ar">›</span>
+      <span>会创</span><span class="ar">›</span>
+      <span class="on">会交付</span>
+    </div>
+    <p><b>三个上线的游戏</b>（复刻版 / 咖啡店版 / 打工人版），都在你手机里，能发给朋友玩。</p>
+    <p><b>一份宣传册和一张反馈记录表</b>——那是真实的人对你作品的真话。</p>
+    <p>以及最重要的一个信念：<b>软件没那么神秘。你说清想要什么，AI 负责怎么实现。</b></p>
+  </div>
+
+  <div class="takeaway">
+    <span class="big">怎么用这份计划？</span>
+    按顺序来，<b>别跳课</b>——每一课都建立在前一课的成果上。<br>
+    第 1-3 课一节课一课，第 4 课跨几天。<br>
+    卡住了不要怕：把讲义里的话复制进去，发出去，<b>剩下的交给 AI</b>。
+  </div>
+
+  <div class="foot">氛围编程第一章 · <strong>做出来 → 改起来 → 创出来 → 推出去</strong></div>
+
+</div>
+</body>
+</html>
